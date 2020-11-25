@@ -11,29 +11,25 @@ namespace Redgate.Lib
 
         public static string DoProcess(string input, string splitString)
         {
-            int secondLineStartIndex = input.IndexOf(splitString) + splitString.Length;
-            string stringWithoutFirstLine = input.Substring(secondLineStartIndex);
+            var secondLineStartIndex = input.IndexOf(splitString) + splitString.Length;
+            var stringWithoutFirstLine = input.Substring(secondLineStartIndex);
             var minefield = ConvertToMultiDimensionalArray(stringWithoutFirstLine, splitString);
-            char[,] resultArray = DoProcess(minefield);
+            var resultArray = DoProcess(minefield);
             var stringResult = ConvertMultiDimensionalArrayToString(resultArray, splitString);
             return stringResult;
         }
 
         private static string ConvertMultiDimensionalArrayToString(char[,] inputArray, string lineSplitString)
         {
-            string stringResult = string.Empty;
+            var stringResult = string.Empty;
 
-            int maxX = inputArray.GetLength(0);
-            int maxY = inputArray.GetLength(1);
+            var maxX = inputArray.GetLength(0);
+            var maxY = inputArray.GetLength(1);
 
-            for (int x = 0; x < maxX; x += 1)
+            for (var x = 0; x < maxX; x += 1)
             {
-                for (int y = 0; y < maxY; y += 1)
-                {
-                    stringResult = string.Concat(stringResult, inputArray[x, y]);
-                }
-
-                stringResult = string.Concat(stringResult, x != (maxX - 1) ? lineSplitString : string.Empty);
+                for (var y = 0; y < maxY; y += 1) stringResult = string.Concat(stringResult, inputArray[x, y]);
+                stringResult = string.Concat(stringResult, x != maxX - 1 ? lineSplitString : string.Empty);
             }
 
             return stringResult;
@@ -50,7 +46,9 @@ namespace Redgate.Lib
             for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
             {
                 if (lines[lineIndex].Length != lineLength)
-                    throw new ArgumentOutOfRangeException("Inconsistent line lengths. This could be due to an invalid seperator string.", nameof(inputString));
+                    throw new ArgumentOutOfRangeException(
+                        "Inconsistent line lengths. This could be due to an invalid seperator string.",
+                        nameof(inputString));
 
                 for (var character = 0; character < lineLength; character++)
                     md[lineIndex, character] = lines[lineIndex][character];
@@ -67,28 +65,28 @@ namespace Redgate.Lib
             var result = new char[xMax, yMax];
 
             for (var x = 0; x < xMax; x++)
-                for (var y = 0; y < yMax; y++)
-                    if (minefield[x, y] == '*')
-                    {
-                        result[x, y] = '*';
-                    }
-                    else
-                    {
-                        var count = '0';
+            for (var y = 0; y < yMax; y++)
+                if (minefield[x, y] == '*')
+                {
+                    result[x, y] = '*';
+                }
+                else
+                {
+                    var count = '0';
 
-                        if (IsMine(minefield, x - 1, y - 1)) count++;
-                        if (IsMine(minefield, x - 1, y)) count++;
-                        if (IsMine(minefield, x - +1, y + 1)) count++;
+                    if (IsMine(minefield, x - 1, y - 1)) count++;
+                    if (IsMine(minefield, x - 1, y)) count++;
+                    if (IsMine(minefield, x - +1, y + 1)) count++;
 
-                        if (IsMine(minefield, x, y - 1)) count++;
-                        if (IsMine(minefield, x, y + 1)) count++;
+                    if (IsMine(minefield, x, y - 1)) count++;
+                    if (IsMine(minefield, x, y + 1)) count++;
 
-                        if (IsMine(minefield, x + 1, y - 1)) count++;
-                        if (IsMine(minefield, x + 1, y)) count++;
-                        if (IsMine(minefield, x + 1, y + 1)) count++;
+                    if (IsMine(minefield, x + 1, y - 1)) count++;
+                    if (IsMine(minefield, x + 1, y)) count++;
+                    if (IsMine(minefield, x + 1, y + 1)) count++;
 
-                        result[x, y] = count;
-                    }
+                    result[x, y] = count;
+                }
 
             return result;
         }

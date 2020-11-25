@@ -61,6 +61,5 @@ namespace Redgate.Lib.Tests
             // Act
             string result = RedgateMinsweeperFunctions.DoProcess(input, splitString);
         }
-
     }
 }
