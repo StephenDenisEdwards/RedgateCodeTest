@@ -62,4 +62,23 @@ namespace Redgate.Lib.Tests
             string result = RedgateMinsweeperFunctions.DoProcess(input, splitString);
         }
     }
+
+    [TestClass]
+    public class RedgateMinsweeperSimplifiedFunctionsTests
+    {
+        [TestMethod]
+        public void RedgateMinsweeperSimplifiedFunctions_DoProcess_Success()
+        {
+            // Arrange
+            string splitString = Environment.NewLine;
+            string expectedOutput = $"*211{splitString}12*1{splitString}0111";
+            string input = $"3 4{splitString}*...{splitString}..*.{splitString}....";
+
+            // Act
+            string result = RedgateMinsweeperSimplifiedFunctions.DoProcess(input, splitString);
+
+            // Assert
+            Assert.AreEqual(expectedOutput, result);
+        }
+    }
 }
