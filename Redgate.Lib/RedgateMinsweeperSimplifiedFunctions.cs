@@ -6,28 +6,28 @@ namespace Redgate.Lib
     {
         public static string DoProcess(string input, string splitString)
         {
-            var il = input.Length;
-            var s = splitString.Length;
-            var p = input.IndexOf(splitString) + s;
-            var l = input.IndexOf(splitString, p + 1) - p;
+            var inputLength = input.Length;
+            var splitStringLength = splitString.Length;
+            var startIdx = input.IndexOf(splitString) + splitStringLength;
+            var segmentLength = input.IndexOf(splitString, startIdx + 1) - startIdx;
 
-            var result = new char[il - p];
+            var result = new char[inputLength - startIdx];
 
-            var fc = 0;
+            var segmentIdx = 0;
 
-            for (var outIdx = 0; outIdx < il - p; outIdx++)
+            for (var outIdx = 0; outIdx < inputLength - startIdx; outIdx++)
             {
-                if (fc > 3)
+                if (segmentIdx > segmentLength - 1)
                 {
-                    for (var j = 0; j < s; j++) result[outIdx + j] = splitString[j];
-                    outIdx += s - 1;
-                    fc = 0;
+                    for (var j = 0; j < splitStringLength; j++) result[outIdx + j] = splitString[j];
+                    outIdx += splitStringLength - 1;
+                    segmentIdx = 0;
                     continue;
                 }
 
-                fc++;
+                segmentIdx++;
 
-                var inIdx = p + outIdx;
+                var inIdx = startIdx + outIdx;
 
                 if (input[inIdx] == '*')
                 {
@@ -35,29 +35,31 @@ namespace Redgate.Lib
                     continue;
                 }
 
-                var a = inIdx - s - l - 1;
-                var b = inIdx - s - l;
-                var c = inIdx - s - l + 1;
+                int scanOffset = splitStringLength + segmentLength;
+                
+                var a = inIdx - scanOffset - 1;
+                var b = inIdx - scanOffset;
+                var c = inIdx - scanOffset + 1;
 
                 var d = inIdx - 1;
                 var e = inIdx + 1;
 
-                var f = inIdx + s + l - 1;
-                var g = inIdx + s + l;
-                var h = inIdx + s + l + 1;
+                var f = inIdx + scanOffset - 1;
+                var g = inIdx + scanOffset;
+                var h = inIdx + scanOffset + 1;
 
                 var countChr = '0';
 
-                if (a > p - 1 && IsMine(input, a)) countChr++;
-                if (b > p - 1 && IsMine(input, b)) countChr++;
-                if (c > p - 1 && IsMine(input, c)) countChr++;
+                if (a > startIdx - 1 && a < inputLength && IsMine(input, a)) countChr++;
+                if (b > startIdx - 1 && b < inputLength && IsMine(input, b)) countChr++;
+                if (c > startIdx - 1 && c < inputLength && IsMine(input, c)) countChr++;
 
-                if (IsMine(input, d)) countChr++;
-                if (IsMine(input, e)) countChr++;
+                if (d < inputLength && IsMine(input, d)) countChr++;
+                if (e < inputLength && IsMine(input, e)) countChr++;
                 
-                if (f < il && IsMine(input, f)) countChr++;
-                if (g < il && IsMine(input, g)) countChr++;
-                if (h < il && IsMine(input, h)) countChr++;
+                if (f < inputLength && IsMine(input, f)) countChr++;
+                if (g < inputLength && IsMine(input, g)) countChr++;
+                if (h < inputLength && IsMine(input, h)) countChr++;
 
                 result[outIdx] = countChr;
             }
@@ -68,8 +70,8 @@ namespace Redgate.Lib
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool IsMine(string input, int index)
         {
-            if (index < 0 || index > input.Length - 1)
-                return false;
+            //if (index < 0 || index > input.Length - 1)
+            //    return false;
             return input[index] == '*';
         }
     }
