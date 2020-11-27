@@ -80,5 +80,29 @@ namespace Redgate.Lib.Tests
             // Assert
             Assert.AreEqual(expectedOutput, result);
         }
+
+        [TestMethod]
+        public void RedgateMinsweeperSimplifiedFunctions_DoProcess_2_Success()
+        {
+            /*
+                *212*211
+                12*212*1
+                12121211
+                *212*211
+                12*212*1
+                01110111        
+             */
+            // Arrange
+            string splitString = Environment.NewLine;
+            string expectedOutput = $"*212*211{splitString}12*212*1{splitString}12121211{splitString}*212*211{splitString}12*212*1{splitString}01110111";
+            string input = $"6 8{splitString}*...*...{splitString}..*...*.{splitString}........{splitString}*...*...{splitString}..*...*.{splitString}........";
+
+            // Act
+            string result = RedgateMinsweeperSimplifiedFunctions.DoProcess(input, splitString);
+
+            // Assert
+            Assert.AreEqual(expectedOutput, result);
+        }
+
     }
 }
