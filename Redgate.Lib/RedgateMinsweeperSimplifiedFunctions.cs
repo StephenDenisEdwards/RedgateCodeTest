@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Redgate.Lib
 {
@@ -6,73 +7,61 @@ namespace Redgate.Lib
     {
         public static string DoProcess(string input, string splitString)
         {
-            var inputLength = input.Length;
+            const char mineCharacter = '*';
             var splitStringLength = splitString.Length;
-            var startIdx = input.IndexOf(splitString) + splitStringLength;
-            var segmentLength = input.IndexOf(splitString, startIdx + 1) - startIdx;
+            var startIndex = input.IndexOf(splitString, StringComparison.Ordinal) + splitStringLength;
+            var segmentLength = input.IndexOf(splitString, startIndex + 1, StringComparison.Ordinal) - startIndex;
 
-            var result = new char[inputLength - startIdx];
+            var result = new char[input.Length - startIndex];
 
-            var segmentIdx = 0;
+            var segmentIndex = 0;
 
-            for (var outIdx = 0; outIdx < inputLength - startIdx; outIdx++)
+            for (var outputIndex = 0; outputIndex < input.Length - startIndex; outputIndex++)
             {
-                if (segmentIdx > segmentLength - 1)
+                if (segmentIndex > segmentLength - 1)
                 {
-                    for (var j = 0; j < splitStringLength; j++) result[outIdx + j] = splitString[j];
-                    outIdx += splitStringLength - 1;
-                    segmentIdx = 0;
+                    for (var j = 0; j < splitStringLength; j++) result[outputIndex + j] = splitString[j];
+                    outputIndex += splitStringLength - 1;
+                    segmentIndex = 0;
                     continue;
                 }
 
-                segmentIdx++;
+                segmentIndex++;
 
-                var inIdx = startIdx + outIdx;
+                var inIdx = startIndex + outputIndex;
 
-                if (input[inIdx] == '*')
+                if (input[inIdx] == mineCharacter)
                 {
-                    result[outIdx] = '*';
+                    result[outputIndex] = mineCharacter;
                     continue;
                 }
 
                 int scanOffset = splitStringLength + segmentLength;
                 
-                var a = inIdx - scanOffset - 1;
-                var b = inIdx - scanOffset;
-                var c = inIdx - scanOffset + 1;
-
-                var d = inIdx - 1;
-                var e = inIdx + 1;
-
-                var f = inIdx + scanOffset - 1;
-                var g = inIdx + scanOffset;
-                var h = inIdx + scanOffset + 1;
-
                 var countChr = '0';
 
-                if (a > startIdx - 1 && a < inputLength && IsMine(input, a)) countChr++;
-                if (b > startIdx - 1 && b < inputLength && IsMine(input, b)) countChr++;
-                if (c > startIdx - 1 && c < inputLength && IsMine(input, c)) countChr++;
+                IsMine(mineCharacter, startIndex, input, inIdx - scanOffset - 1, ref countChr);
+                IsMine(mineCharacter, startIndex, input, inIdx - scanOffset, ref countChr);
+                IsMine(mineCharacter, startIndex, input, inIdx - scanOffset + 1, ref countChr);
 
-                if (d < inputLength && IsMine(input, d)) countChr++;
-                if (e < inputLength && IsMine(input, e)) countChr++;
+                IsMine(mineCharacter, startIndex, input, inIdx - 1, ref countChr);
+                IsMine(mineCharacter, startIndex, input, inIdx + 1, ref countChr);
                 
-                if (f < inputLength && IsMine(input, f)) countChr++;
-                if (g < inputLength && IsMine(input, g)) countChr++;
-                if (h < inputLength && IsMine(input, h)) countChr++;
+                IsMine(mineCharacter, startIndex, input, inIdx + scanOffset - 1, ref countChr);
+                IsMine(mineCharacter, startIndex, input, inIdx + scanOffset, ref countChr);
+                IsMine(mineCharacter, startIndex, input, inIdx + scanOffset + 1, ref countChr);
 
-                result[outIdx] = countChr;
+                result[outputIndex] = countChr;
             }
             
             return new string(result);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool IsMine(string input, int index)
+        private static void IsMine(char mineCharacter, int startIndex, string input, int index, ref char counterChr)
         {
-            //if (index < 0 || index > input.Length - 1)
-            //    return false;
-            return input[index] == '*';
+            if (index > startIndex - 1 && index < input.Length && input[index] == '*')
+                counterChr++;
         }
     }
 }
