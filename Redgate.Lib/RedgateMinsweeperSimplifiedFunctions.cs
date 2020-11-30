@@ -40,16 +40,16 @@ namespace Redgate.Lib
                 
                 var countChr = '0';
 
-                IsMine(mineCharacter, startIndex, input, inIdx - scanOffset - 1, ref countChr);
-                IsMine(mineCharacter, startIndex, input, inIdx - scanOffset, ref countChr);
-                IsMine(mineCharacter, startIndex, input, inIdx - scanOffset + 1, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx - scanOffset - 1, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx - scanOffset, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx - scanOffset + 1, ref countChr);
 
-                IsMine(mineCharacter, startIndex, input, inIdx - 1, ref countChr);
-                IsMine(mineCharacter, startIndex, input, inIdx + 1, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx - 1, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx + 1, ref countChr);
                 
-                IsMine(mineCharacter, startIndex, input, inIdx + scanOffset - 1, ref countChr);
-                IsMine(mineCharacter, startIndex, input, inIdx + scanOffset, ref countChr);
-                IsMine(mineCharacter, startIndex, input, inIdx + scanOffset + 1, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx + scanOffset - 1, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx + scanOffset, ref countChr);
+                OnMineIncrement(mineCharacter, startIndex, input, inIdx + scanOffset + 1, ref countChr);
 
                 result[outputIndex] = countChr;
             }
@@ -58,7 +58,7 @@ namespace Redgate.Lib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void IsMine(char mineCharacter, int startIndex, string input, int index, ref char counterChr)
+        private static void OnMineIncrement(char mineCharacter, int startIndex, string input, int index, ref char counterChr)
         {
             if (index > startIndex - 1 && index < input.Length && input[index] == '*')
                 counterChr++;
